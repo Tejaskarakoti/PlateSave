@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlateSave - Turning Food Waste Into Hope</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo">🍽️ PlateSave</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#impact">Impact</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-cta">
+                <a href="register.html" class="btn-nav btn-outline" >NGO Login</a>
+                <a href="register.html" class="btn-nav btn-filled" >Restaurant Login</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+        </div>
+        <div class="mobile-nav" id="mobile-nav">
+            <a href="#home">Home</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#impact">Impact</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="#" id="mobile-ngo-login">NGO Login</a>
+            <a href="#" id="mobile-restaurant-login">Restaurant Login</a>
+        </div>
+    </nav>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-modal">&times;</span>
+            <h2 id="modal-title">Restaurant Login</h2>
+            <form class="login-form" id="login-form">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <span id="notification-text">Login successful!</span>
+    </div>
+
+    <section id="home" class="hero">
+        <div class="hero-background">
+            <div class="hero-slide active"></div>
+            <div class="hero-slide"></div>
+            <div class="hero-slide"></div>
+            <div class="hero-slide"></div>
+            <div class="hero-slide"></div>
+        </div>
+        
+        <div class="slide-indicators">
+            <div class="slide-indicator active" data-slide="0"></div>
+            <div class="slide-indicator" data-slide="1"></div>
+            <div class="slide-indicator" data-slide="2"></div>
+            <div class="slide-indicator" data-slide="3"></div>
+            <div class="slide-indicator" data-slide="4"></div>
+        </div>
+        
+       
+        
+        <div class="hero-content">
+            <h1>🍽️ PlateSave</h1>
+            <p class="hero-subtitle">(From Surplus to Service)</p>
+            <p class="hero-description">
+                Every meal saved is a step towards ending hunger. Connect surplus food from restaurants 
+                with NGOs who feed communities in need. Real-time. Efficient. Impactful.
+            </p>
+            <div class="cta-buttons">
+                <a href="register.html" class="btn btn-primary">🏪 Join as Restaurant</a>
+                <a href="register.html" class="btn btn-secondary" >🤝 Join as NGO</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How PlateSave Works</h2>
+            
+            <div class="workflow-container">
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <span class="step-number">1</span>
+                        📱
+                    </div>
+                    <h3>Instant Connection</h3>
+                    <p>Restaurants and NGOs connect through our real-time platform, creating immediate opportunities to save food</p>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <span class="step-number">2</span>
+                        🔔
+                    </div>
+                    <h3>Smart Notifications</h3>
+                    <p>NGOs receive instant alerts when surplus food becomes available nearby, ensuring quick response times</p>
+                </div>
+                
+                <div class="workflow-step">
+                    <div class="step-icon">
+                        <span class="step-number">3</span>
+                        🚚
+                    </div>
+                    <h3>Seamless Pickup</h3>
+                    <p>QR code verification, GPS tracking, and direct communication make food collection simple and secure</p>
+                </div>
+            </div>
+
+            <div class="user-types">
+                <div class="user-type-card">
+                    <h3>🏪 For Restaurants</h3>
+                    <ul class="process-steps">
+                        <li>📸 Post surplus food with photos and details</li>
+                        <li>⏰ Set pickup time windows and quantities</li>
+                        <li>📍 Share location and special instructions</li>
+                        <li>📊 Track your impact and donation history</li>
+                        <li>⭐ Build reputation through verified donations</li>
+                    </ul>
+                </div>
+                
+                <div class="user-type-card">
+                    <h3>🤝 For NGOs</h3>
+                    <ul class="process-steps">
+                        <li>🔍 Browse real-time surplus food listings</li>
+                        <li>📲 Receive instant notifications for nearby food</li>
+                        <li>🏃‍♂️ One-click claiming with automatic reservation</li>
+                        <li>🗺️ GPS navigation to pickup locations</li>
+                        <li>✅ QR verification and impact tracking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="problem-section">
+        <div class="container">
+            <h2 class="section-title">The Food Crisis We're Solving</h2>
+            <div class="problem-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">🗑️</div>
+                    <div class="stat-number" data-count="68">0</div>
+                    <div class="stat-description">Million tonnes of food wasted annually in India</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">😢</div>
+                    <div class="stat-number" data-count="194">0</div>
+                    <div class="stat-description">Million people undernourished in India</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏪</div>
+                    <div class="stat-number" data-count="40">0</div>
+                    <div class="stat-description">% Food wastage happens at retail & consumer level</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💸</div>
+                    <div class="stat-number" data-count="92">0</div>
+                    <div class="stat-description">Thousand crores lost annually due to food waste</div>
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 1.4rem; opacity: 0.95; max-width: 800px; margin: 0 auto;">
+                While perfectly good food ends up in landfills, millions of people sleep hungry every night. 
+                PlateSave bridges this gap with technology, creating a win-win solution for restaurants and communities.
+            </p>
+        </div>
+    </section>
+
+    <section id="impact" class="impact-section">
+        <div class="container">
+            <h2 class="section-title">Real Impact, Real Change</h2>
+            <p style="text-align: center; font-size: 1.3rem; margin-bottom: 2rem;">
+                Every donation creates a ripple effect of positive change
+            </p>
+            
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-icon">🥘</div>
+                    <h3>Meals Rescued</h3>
+                    <p>Transform surplus food into nutritious meals for families in need</p>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">🌱</div>
+                    <h3>CO₂ Reduced</h3>
+                    <p>Every meal saved prevents methane emissions from landfills</p>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">👥</div>
+                    <h3>Communities Fed</h3>
+                    <p>Direct impact on underprivileged communities across India</p>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-icon">📊</div>
+                    <h3>Live Tracking</h3>
+                    <p>Real-time dashboards show your social and environmental impact</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2 class="section-title">About PlateSave</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>Our Mission</h3>
+                    <p>PlateSave was born from a simple yet powerful realization: while millions of people in India go to bed hungry every night, tons of perfectly good food end up in landfills daily. This paradox inspired Team Hack Horizon to create a technology solution that could bridge this gap.</p>
+                    
+                    <p>During our research, we discovered that 68 million tonnes of food are wasted annually in India, while 194 million people remain undernourished. The problem wasn't the lack of food, but the lack of an efficient system to connect surplus food with those who need it most.</p>
+                    
+                    <p>Built for the SIH Internal Hackathon 2025 under the theme "Agriculture and Food Technology / Clean and Green," PlateSave represents our commitment to using technology for social good. We believe that every meal saved is a step towards ending hunger and building a more sustainable future.</p>
+                    
+                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 107, 107, 0.1); border-radius: 15px; border-left: 4px solid #ff6b6b;">
+                        <p style="font-style: italic; margin: 0; font-size: 1.1rem; color: #333;">
+                            "Technology should serve humanity. PlateSave is our contribution to a world where no one sleeps hungry while food goes to waste."
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="team-card">
+                    <h4>👥 Team Hack Horizon</h4>
+                    <div style="text-align: left; margin-top: 1.5rem;">
+                        <p><strong>🎯 Team Leader:</strong><br>Tejas Karakoti - Database Management</p>
+                        
+                        <p style="margin-top: 1rem;"><strong>👨‍💻 Development Team:</strong></p>
+                        <ul style="list-style: none; padding-left: 1rem;">
+                            <li>• Sapna Mehra - Backend Development</li>
+                            <li>• Himanshi Karakoti - Backend Development</li>
+                            <li>• Divyanshi Pal - UI/UX Design</li>
+                            <li>• Divya Bisht - UI/UX Design</li>
+                            <li>• Prateek Banoula - API Integration</li>
+                        </ul>
+                        
+                        <div style="margin-top: 2rem; text-align: center; padding: 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
+                            <p style="margin: 0; font-weight: 600; color: #667eea;">SIH Internal Hackathon 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 3rem;">
+                Ready to make a difference? Join our mission to end food waste and hunger.
+            </p>
+            
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">📧</div>
+                    <h3>Email Us</h3>
+                    <p>platesavehackhorizon@com</p>
+                    <p>For partnerships and support</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">📱</div>
+                    <h3>Call Us</h3>
+                    <p>+91 XXXXXXX90</p>
+                    <p>Available 24/7 for urgent queries</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">🏢</div>
+                    <h3>Visit Us</h3>
+                    <p>Graphic Era Hill University</p>
+                    <p>Bhimtal, Uttarakhand, India</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>🍽️ PlateSave</h3>
+                    <p>Connecting surplus food with those who need it most. Every meal saved is a step towards ending hunger.</p>
+                    <p>Built with ❤️ by Team Hack Horizon</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#impact">Impact</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>For Organizations</h3>
+                    <ul>
+                        <li><a href="#">Restaurant Registration</a></li>
+                        <li><a href="#">NGO Registration</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Support Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Food Safety Guidelines</a></li>
+                        <li><a href="#">Community Standards</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 PlateSave by Team Hack Horizon. All rights reserved. | SIH Internal Hackathon 2025</p>
+            </div>
+        </div>
+    </footer>
+<script>
+  async function getLocation() {
+    try {
+      const response = await fetch("http://ip-api.com/json/");
+      const data = await response.json();
+
+      // Show in console
+      console.log("Full API Response:", data);
+
+      // Example usage
+      document.getElementById("location").innerText =
+        `📍 You are in ${data.city}, ${data.regionName}, ${data.country}`;
+
+      document.getElementById("coords").innerText =
+        `🌐 Latitude: ${data.lat}, Longitude: ${data.lon}`;
+    } catch (error) {
+      console.error("Error fetching location:", error);
+    }
+  }
+
+  // Call on page load
+  window.onload = getLocation;
+</script>
+
+    <script src="assets/js/script.js"></script>
+</body>
+<div id="location">Detecting location...</div>
+<div id="coords"></div>
+
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlateSave - Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/register.css">
+</head>
+<body>
+    <div class="logo">🍽️ PlateSave</div>
+    
+    <div class="particles" id="particles"></div>
+    
+
+    <div class="container">
+        <div class="register-card">
+            <div class="avatar-circle">
+                👤
+            </div>
+            
+            <h1 class="form-title">Create Account</h1>
+            
+            <form id="registerForm">
+                <div class="account-type">
+                    <div class="type-option active" data-type="restaurant">
+                        🏪 Restaurant
+                    </div>
+                    <div class="type-option" data-type="ngo">
+                        🤝 NGO
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="organizationName">Organization Name</label>
+                    <input type="text" id="organizationName" name="organizationName" placeholder="Enter your organization name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+
+                <button type="submit" class="create-btn">Create Account</button>
+            </form>
+
+            <div class="social-divider">or continue with</div>
+
+            <div class="social-buttons">
+                <button class="social-btn google-btn" onclick="signInWithGoogle()">
+                    <span>G</span> Google
+                </button>
+                <button class="social-btn facebook-btn" onclick="signInWithFacebook()">
+                    <span>f</span> Facebook
+                </button>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a href="#" onclick="goToLogin()">Login Here</a>
+            </div>
+        </div>
+    </div>
+    <script type ="module" src="assets/js/animation.js" defer></script>
+    <script type="module" src="assets/js/register.js" defer></script>
+    
+</body>
+</html>
