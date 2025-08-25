@@ -1,1660 +1,1857 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PlateSave Dashboard - Turning Food Waste Into Hope</title>
-    <style>
-        /* General Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            padding: 1rem 0;
-            transition: all 0.3s ease;
-        }
-
-        .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #ff6b6b;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #ff6b6b;
-        }
-
-        .nav-cta {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .user-welcome {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .btn-nav {
-            padding: 8px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline {
-            border: 2px solid #ff6b6b;
-            color: #ff6b6b;
-        }
-
-        .btn-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-        }
-
-        /* Mobile Menu */
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #333;
-        }
-
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            top: 80px;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            z-index: 999;
-        }
-
-        .mobile-nav.active {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        .mobile-nav a {
-            display: block;
-            padding: 1rem;
-            text-decoration: none;
-            color: #333;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Notifications */
-        .notification {
-            position: fixed;
-            top: 90px;
-            right: 20px;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-            z-index: 1001;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding-top: 80px;
-        }
-
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-        }
-
-        .hero-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
-        }
-
-        .hero-slide.active {
-            opacity: 1;
-        }
-
-        .hero-slide:nth-child(1) {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)),
-                linear-gradient(45deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
-        }
-
-        .hero-slide:nth-child(2) {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.8), rgba(238, 90, 82, 0.8)),
-                linear-gradient(45deg, #a8edea 0%, #fed6e3 100%);
-        }
-
-        .hero-slide:nth-child(3) {
-            background: linear-gradient(135deg, rgba(79, 172, 254, 0.8), rgba(0, 242, 254, 0.8)),
-                linear-gradient(45deg, #d299c2 0%, #fef9d7 100%);
-        }
-
-        .hero-slide:nth-child(4) {
-            background: linear-gradient(135deg, rgba(240, 147, 251, 0.8), rgba(245, 87, 108, 0.8)),
-                linear-gradient(45deg, #89f7fe 0%, #66a6ff 100%);
-        }
-
-        .hero-slide:nth-child(5) {
-            background: linear-gradient(135deg, rgba(168, 237, 234, 0.8), rgba(254, 214, 227, 0.8)),
-                linear-gradient(45deg, #fdbb2d 0%, #22c1c3 100%);
-        }
-
-        .slide-indicators {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 3;
-        }
-
-        .slide-indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .slide-indicator.active {
-            background: #ff6b6b;
-            transform: scale(1.2);
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.1);
-            z-index: 1;
-        }
-
-        .hero-content {
-            text-align: center;
-            color: white;
-            z-index: 2;
-            position: relative;
-            max-width: 900px;
-            padding: 0 20px;
-        }
-
-        .hero h1 {
-            font-size: 4.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            animation: slideInDown 1s ease-out;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero-subtitle {
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-            animation: slideInUp 1s ease-out 0.3s both;
-            font-weight: 300;
-        }
-
-        .hero-description {
-            font-size: 1.3rem;
-            margin-bottom: 3rem;
-            opacity: 0.9;
-            animation: fadeIn 1s ease-out 0.6s both;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeIn 1s ease-out 0.9s both;
-        }
-
-        .btn {
-            padding: 18px 35px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Dashboard Section */
-        .user-dashboard {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #ffecd2, #fcb69f);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 3.5rem;
-            text-align: center;
-            margin-bottom: 4rem;
-            font-weight: 700;
-            color: #333;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: #ff6b6b;
-            border-radius: 2px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .dashboard-card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2.5rem;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .dashboard-card.animate {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-
-        .card-icon {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .dashboard-card h3 {
-            font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: #333;
-        }
-
-        .impact-stats {
-            display: flex;
-            justify-content: space-around;
-            gap: 1rem;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            display: block;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #ff6b6b;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .org-details {
-            text-align: left;
-        }
-
-        .org-details p {
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .action-btn {
-            padding: 1rem;
-            border: none;
-            border-radius: 15px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        /* How It Works Section */
-        .how-it-works {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #a8edea, #fed6e3);
-            position: relative;
-        }
-
-        .workflow-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-bottom: 4rem;
-        }
-
-        .workflow-step {
-            text-align: center;
-            position: relative;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.6s ease;
-        }
-
-        .workflow-step.animate {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .step-icon {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            margin: 0 auto 2rem;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .workflow-step:hover .step-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .step-number {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ff6b6b;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .user-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 3rem;
-            margin-top: 4rem;
-        }
-
-        .user-type-card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 3rem;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: all 0.6s ease;
-        }
-
-        .user-type-card.animate {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .user-type-card h3 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .process-steps {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .process-steps li {
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 1.1rem;
-            opacity: 0;
-            transform: translateX(-20px);
-            animation: slideInLeft 0.5s ease forwards;
-        }
-
-        .process-steps li:nth-child(1) { animation-delay: 0.1s; }
-        .process-steps li:nth-child(2) { animation-delay: 0.2s; }
-        .process-steps li:nth-child(3) { animation-delay: 0.3s; }
-        .process-steps li:nth-child(4) { animation-delay: 0.4s; }
-        .process-steps li:nth-child(5) { animation-delay: 0.5s; }
-
-        @keyframes slideInLeft {
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .process-steps li:last-child {
-            border-bottom: none;
-        }
-
-        /* Problem Section */
-        .problem-section {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            color: white;
-        }
-
-        .problem-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 3rem 2rem;
-            border-radius: 25px;
-            text-align: center;
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: transform 0.3s ease;
-            opacity: 0;
-            transform: scale(0.8);
-            animation: scaleIn 0.6s ease forwards;
-        }
-
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-
-        @keyframes scaleIn {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px) scale(1.02);
-        }
-
-        .stat-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card .stat-number {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #ffeb3b;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .stat-description {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        /* Impact Section */
-        .impact-section {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .impact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .impact-card {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 2.5rem;
-            border-radius: 20px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .impact-card.animate {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .impact-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .impact-icon {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* About Section */
-        .about-section {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #a8edea, #fed6e3);
-            color: #333;
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-text {
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: all 0.6s ease;
-        }
-
-        .about-text.animate {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .about-text h3 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            color: #333;
-        }
-
-        .about-text p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
-        }
-
-        .team-card {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 3rem;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all 0.6s ease;
-        }
-
-        .team-card.animate {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .team-card h4 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: #333;
-            text-align: center;
-        }
-
-        /* Contact Section */
-        .contact-section {
-            padding: 120px 0;
-            background: linear-gradient(135deg, #ffecd2, #fcb69f);
-            color: #333;
-        }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-
-        .contact-card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 3rem;
-            border-radius: 25px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.6s ease;
-        }
-
-        .contact-card.animate {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .contact-icon {
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: #ff6b6b;
-        }
-
-        /* Footer */
-        .footer {
-            background: #2c3e50;
-            color: white;
-            padding: 60px 0 30px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-section h3 {
-            margin-bottom: 1.5rem;
-            color: #3498db;
-            font-size: 1.3rem;
-        }
-
-        .footer-section p,
-        .footer-section li {
-            margin-bottom: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-section a:hover {
-            color: #3498db;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #34495e;
-            padding-top: 2rem;
-            text-align: center;
-            opacity: 0.7;
-        }
-
-        /* Animations */
-        @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Scroll indicator */
-        .scroll-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 107, 107, 0.2);
-            z-index: 1001;
-        }
-
-        .scroll-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #ee5a52);
-            width: 0%;
-            transition: width 0.1s ease;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .nav-cta {
-                gap: 0.5rem;
-            }
-
-            .btn-nav {
-                padding: 6px 15px;
-                font-size: 0.9rem;
-            }
-
-            .hero h1 {
-                font-size: 3rem;
-            }
-
-            .hero-subtitle {
-                font-size: 1.3rem;
-            }
-
-            .section-title {
-                font-size: 2.5rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-
-            .workflow-container,
-            .user-types,
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="scroll-indicator">
-        <div class="scroll-progress"></div>
-    </div>
-
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo">🍽️ PlateSave</a>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#impact">Impact</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <div class="nav-cta">
-                <span class="user-welcome" id="userWelcome">Welcome!</span>
-                <a href="#" class="btn-nav btn-outline" id="logoutBtn">Logout</a>
-            </div>
-            <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
-        </div>
-        <div class="mobile-nav" id="mobile-nav">
-            <a href="#home">Home</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#impact">Impact</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <a href="#" id="mobile-logout">Logout</a>
-        </div>
-    </nav>
-
-    <div id="notification" class="notification">
-        <span id="notification-text">Welcome to PlateSave!</span>
-    </div>
-
-    <section id="home" class="hero">
-        <div class="hero-background">
-            <div class="hero-slide active"></div>
-            <div class="hero-slide"></div>
-            <div class="hero-slide"></div>
-            <div class="hero-slide"></div>
-            <div class="hero-slide"></div>
-        </div>
-        
-        <div class="slide-indicators">
-            <div class="slide-indicator active" data-slide="0"></div>
-            <div class="slide-indicator" data-slide="1"></div>
-            <div class="slide-indicator" data-slide="2"></div>
-            <div class="slide-indicator" data-slide="3"></div>
-            <div class="slide-indicator" data-slide="4"></div>
-        </div>
-        
-        <div class="hero-content">
-            <h1>🍽️ PlateSave</h1>
-            <p class="hero-subtitle">(From Surplus to Service)</p>
-            <p class="hero-description">
-                Welcome to your PlateSave dashboard! Start making a difference by connecting surplus food 
-                with those who need it most. Your organization is now part of our mission to end food waste.
-            </p>
-            <div class="cta-buttons">
-                <a href="#food-management" class="btn btn-primary" id="primaryAction">🍝 Manage Food</a>
-                <a href="#profile" class="btn btn-secondary">👤 View Profile</a>
-            </div>
-        </div>
-    </section>
-
-    <section id="user-dashboard" class="user-dashboard">
-        <div class="container">
-            <h2 class="section-title">Your Dashboard</h2>
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <div class="card-icon">📊</div>
-                    <h3>Your Impact</h3>
-                    <div class="impact-stats">
-                        <div class="stat">
-                            <span class="stat-number" id="mealsServed">0</span>
-                            <span class="stat-label">Meals Served</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number" id="wasteReduced">0</span>
-                            <span class="stat-label">Kg Waste Reduced</span>
-                        </div>
-                    </div>
-                </div>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>PlateSave Dashboard - Turning Food Waste Into Hope</title>
+            <style>
+                /* General Styles */
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    line-height: 1.6;
+                    color: #333;
+                    overflow-x: hidden;
+                }
+
+                /* Navigation */
+                .navbar {
+                    position: fixed;
+                    top: 0;
+                    width: 100%;
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(10px);
+                    z-index: 1000;
+                    padding: 1rem 0;
+                    transition: all 0.3s ease;
+                }
+
+                .navbar.scrolled {
+                    background: rgba(255, 255, 255, 0.98);
+                    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+                }
+
+                .nav-container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 0 20px;
+                }
+
+                .logo {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    color: #ff6b6b;
+                    text-decoration: none;
+                }
+
+                .nav-links {
+                    display: flex;
+                    list-style: none;
+                    gap: 2rem;
+                    transition: all 0.3s ease;
+                }
+
+                .nav-links a {
+                    text-decoration: none;
+                    color: #333;
+                    font-weight: 500;
+                    transition: color 0.3s ease;
+                }
+
+                .nav-links a:hover {
+                    color: #ff6b6b;
+                }
+
+                .nav-cta {
+                    display: flex;
+                    gap: 1rem;
+                    align-items: center;
+                }
+
+                .user-welcome {
+                    font-weight: 600;
+                    color: #333;
+                }
+
+                .btn-nav {
+                    padding: 8px 20px;
+                    border-radius: 25px;
+                    text-decoration: none;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                }
+
+                .btn-outline {
+                    border: 2px solid #ff6b6b;
+                    color: #ff6b6b;
+                }
+
+                .btn-nav:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+                }
+
+                /* Mobile Menu */
+                .mobile-menu-btn {
+                    display: none;
+                    background: none;
+                    border: none;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    color: #333;
+                }
+
+                .mobile-nav {
+                    display: none;
+                    position: fixed;
+                    top: 80px;
+                    left: 0;
+                    width: 100%;
+                    background: rgba(255, 255, 255, 0.98);
+                    backdrop-filter: blur(10px);
+                    padding: 2rem;
+                    z-index: 999;
+                }
+
+                .mobile-nav.active {
+                    display: block;
+                    animation: slideDown 0.3s ease;
+                }
+
+                .mobile-nav a {
+                    display: block;
+                    padding: 1rem;
+                    text-decoration: none;
+                    color: #333;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                }
+
+                @keyframes slideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                /* Notifications */
+                .notification {
+                    position: fixed;
+                    top: 90px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+                    z-index: 1001;
+                    transform: translateX(400px);
+                    transition: transform 0.3s ease;
+                }
+
+                .notification.show {
+                    transform: translateX(0);
+                }
+
+                /* Hero Section */
+                .hero {
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    overflow: hidden;
+                    padding-top: 80px;
+                }
+
+                .hero-background {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: -2;
+                }
+
+                .hero-slide {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-size: cover;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    opacity: 0;
+                    transition: opacity 2s ease-in-out;
+                }
+
+                .hero-slide.active {
+                    opacity: 1;
+                }
+
+                .hero-slide:nth-child(1) {
+                    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)),
+                        linear-gradient(45deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+                }
+
+                .hero-slide:nth-child(2) {
+                    background: linear-gradient(135deg, rgba(255, 107, 107, 0.8), rgba(238, 90, 82, 0.8)),
+                        linear-gradient(45deg, #a8edea 0%, #fed6e3 100%);
+                }
+
+                .hero-slide:nth-child(3) {
+                    background: linear-gradient(135deg, rgba(79, 172, 254, 0.8), rgba(0, 242, 254, 0.8)),
+                        linear-gradient(45deg, #d299c2 0%, #fef9d7 100%);
+                }
+
+                .hero-slide:nth-child(4) {
+                    background: linear-gradient(135deg, rgba(240, 147, 251, 0.8), rgba(245, 87, 108, 0.8)),
+                        linear-gradient(45deg, #89f7fe 0%, #66a6ff 100%);
+                }
+
+                .hero-slide:nth-child(5) {
+                    background: linear-gradient(135deg, rgba(168, 237, 234, 0.8), rgba(254, 214, 227, 0.8)),
+                        linear-gradient(45deg, #fdbb2d 0%, #22c1c3 100%);
+                }
+
+                .slide-indicators {
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    display: flex;
+                    gap: 10px;
+                    z-index: 3;
+                }
+
+                .slide-indicator {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.5);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+
+                .slide-indicator.active {
+                    background: #ff6b6b;
+                    transform: scale(1.2);
+                }
+
+                .hero::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.1);
+                    z-index: 1;
+                }
+
+                .hero-content {
+                    text-align: center;
+                    color: white;
+                    z-index: 2;
+                    position: relative;
+                    max-width: 900px;
+                    padding: 0 20px;
+                }
+
+                .hero h1 {
+                    font-size: 4.5rem;
+                    font-weight: 700;
+                    margin-bottom: 1rem;
+                    animation: slideInDown 1s ease-out;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                }
+
+                .hero-subtitle {
+                    font-size: 1.8rem;
+                    margin-bottom: 2rem;
+                    opacity: 0.95;
+                    animation: slideInUp 1s ease-out 0.3s both;
+                    font-weight: 300;
+                }
+
+                .hero-description {
+                    font-size: 1.3rem;
+                    margin-bottom: 3rem;
+                    opacity: 0.9;
+                    animation: fadeIn 1s ease-out 0.6s both;
+                    max-width: 600px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .cta-buttons {
+                    display: flex;
+                    gap: 1.5rem;
+                    justify-content: center;
+                    flex-wrap: wrap;
+                    animation: fadeIn 1s ease-out 0.9s both;
+                }
+
+                .btn {
+                    padding: 18px 35px;
+                    border: none;
+                    border-radius: 50px;
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-decoration: none;
+                    display: inline-block;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .btn-primary {
+                    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+                    color: white;
+                    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+                }
+
+                .btn-secondary {
+                    background: rgba(255, 255, 255, 0.15);
+                    color: white;
+                    border: 2px solid rgba(255, 255, 255, 0.6);
+                    backdrop-filter: blur(10px);
+                }
+
+                .btn:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+                }
+
+                /* Dashboard Section */
+                .user-dashboard {
+                    padding: 120px 0;
+                    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+                }
+
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 0 20px;
+                }
+
+                .section-title {
+                    font-size: 3.5rem;
+                    text-align: center;
+                    margin-bottom: 4rem;
+                    font-weight: 700;
+                    color: #333;
+                    position: relative;
+                }
+
+                .section-title::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -10px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 100px;
+                    height: 4px;
+                    background: #ff6b6b;
+                    border-radius: 2px;
+                }
+
+                .dashboard-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                    gap: 2rem;
+                }
+
+                .dashboard-card {
+                    background: rgba(255, 255, 255, 0.9);
+                    padding: 2.5rem;
+                    border-radius: 25px;
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    transition: all 0.3s ease;
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                .dashboard-card.animate {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .dashboard-card:hover {
+                    transform: translateY(-10px) scale(1.02);
+                }
+
+                .card-icon {
+                    font-size: 3rem;
+                    text-align: center;
+                    margin-bottom: 1.5rem;
+                }
+
+                .dashboard-card h3 {
+                    font-size: 1.8rem;
+                    text-align: center;
+                    margin-bottom: 1.5rem;
+                    color: #333;
+                }
+
+                .impact-stats {
+                    display: flex;
+                    justify-content: space-around;
+                    gap: 1rem;
+                }
+
+                .stat {
+                    text-align: center;
+                }
+
+                .stat-number {
+                    display: block;
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    color: #ff6b6b;
+                    margin-bottom: 0.5rem;
+                }
+
+                .stat-label {
+                    font-size: 0.9rem;
+                    color: #666;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+
+                .org-details {
+                    text-align: left;
+                }
+
+                .org-details p {
+                    margin-bottom: 1rem;
+                    font-size: 1.1rem;
+                }
+
+                /* How It Works Section */
+                .how-it-works {
+                    padding: 120px 0;
+                    background: linear-gradient(135deg, #a8edea, #fed6e3);
+                    position: relative;
+                }
+
+                .workflow-container {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 3rem;
+                    margin-bottom: 4rem;
+                }
+
+                .workflow-step {
+                    text-align: center;
+                    position: relative;
+                    opacity: 0;
+                    transform: translateY(50px);
+                    transition: all 0.6s ease;
+                }
+
+                .workflow-step.animate {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .step-icon {
+                    width: 120px;
+                    height: 120px;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 3rem;
+                    color: white;
+                    margin: 0 auto 2rem;
+                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+                    transition: transform 0.3s ease;
+                    position: relative;
+                }
+
+                .workflow-step:hover .step-icon {
+                    transform: scale(1.1) rotate(5deg);
+                }
+
+                .step-number {
+                    position: absolute;
+                    top: -10px;
+                    right: -10px;
+                    background: #ff6b6b;
+                    color: white;
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 0.9rem;
+                }
+
+                .user-types {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                    gap: 3rem;
+                    margin-top: 4rem;
+                }
+
+                .user-type-card {
+                    background: rgba(255, 255, 255, 0.9);
+                    padding: 3rem;
+                    border-radius: 25px;
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    opacity: 0;
+                    transform: translateX(-50px);
+                    transition: all 0.6s ease;
+                }
+
+                .user-type-card.animate {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+
+                .user-type-card h3 {
+                    font-size: 2rem;
+                    margin-bottom: 1rem;
+                    color: #333;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+                }
+
+                .process-steps {
+                    list-style: none;
+                    padding-left: 0;
+                }
+
+                .process-steps li {
+                    padding: 0.8rem 0;
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                    font-size: 1.1rem;
+                    opacity: 0;
+                    transform: translateX(-20px);
+                    animation: slideInLeft 0.5s ease forwards;
+                }
+
+                .process-steps li:nth-child(1) { animation-delay: 0.1s; }
+                .process-steps li:nth-child(2) { animation-delay: 0.2s; }
+                .process-steps li:nth-child(3) { animation-delay: 0.3s; }
+                .process-steps li:nth-child(4) { animation-delay: 0.4s; }
+                .process-steps li:nth-child(5) { animation-delay: 0.5s; }
+
+                @keyframes slideInLeft {
+                    to {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                }
+
+                .process-steps li:last-child {
+                    border-bottom: none;
+                }
+
+                /* Problem Section */
+                .problem-section {
+                    padding: 120px 0;
+                    background: linear-gradient(135deg, #f093fb, #f5576c);
+                    color: white;
+                }
+
+                .problem-stats {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 2rem;
+                    margin-bottom: 4rem;
+                }
+
+                .stat-card {
+                    background: rgba(255, 255, 255, 0.15);
+                    padding: 3rem 2rem;
+                    border-radius: 25px;
+                    text-align: center;
+                    backdrop-filter: blur(15px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    transition: transform 0.3s ease;
+                    opacity: 0;
+                    transform: scale(0.8);
+                    animation: scaleIn 0.6s ease forwards;
+                }
+
+                .stat-card:nth-child(1) { animation-delay: 0.1s; }
+                .stat-card:nth-child(2) { animation-delay: 0.2s; }
+                .stat-card:nth-child(3) { animation-delay: 0.3s; }
+                .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+                @keyframes scaleIn {
+                    to {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+
+                .stat-card:hover {
+                    transform: translateY(-10px) scale(1.02);
+                }
+
+                .stat-icon {
+                    font-size: 3rem;
+                    margin-bottom: 1rem;
+                }
+
+                .stat-card .stat-number {
+                    font-size: 3.5rem;
+                    font-weight: 700;
+                    margin-bottom: 0.5rem;
+                    color: #ffeb3b;
+                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                }
+
+                .stat-description {
+                    font-size: 1.1rem;
+                    opacity: 0.9;
+                }
+
+                /* Impact Section */
+                .impact-section {
+                    padding: 120px 0;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    color: white;
+                }
+
+                .impact-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 2rem;
+                    margin-top: 3rem;
+                }
+
+                .impact-card {
+                    background: rgba(255, 255, 255, 0.15);
+                    padding: 2.5rem;
+                    border-radius: 20px;
+                    text-align: center;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    transition: all 0.3s ease;
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                .impact-card.animate {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .impact-card:hover {
+                    transform: translateY(-10px) scale(1.02);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+                }
+
+                .impact-icon {
+                    font-size: 3.5rem;
+                    margin-bottom: 1.5rem;
+                }
+
+                /* About Section */
+                .about-section {
+                    padding: 120px 0;
+                    background: linear-gradient(135deg, #a8edea, #fed6e3);
+                    color: #333;
+                }
+
+                .about-content {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 4rem;
+                    align-items: center;
+                }
+
+                .about-text {
+                    opacity: 0;
+                    transform: translateX(-50px);
+                    transition: all 0.6s ease;
+                }
+
+                .about-text.animate {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+
+                .about-text h3 {
+                    font-size: 2.5rem;
+                    margin-bottom: 2rem;
+                    color: #333;
+                }
+
+                .about-text p {
+                    font-size: 1.2rem;
+                    line-height: 1.8;
+                    margin-bottom: 1.5rem;
+                }
+
+                .team-card {
+                    background: rgba(255, 255, 255, 0.8);
+                    padding: 3rem;
+                    border-radius: 25px;
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                    backdrop-filter: blur(10px);
+                    opacity: 0;
+                    transform: translateX(50px);
+                    transition: all 0.6s ease;
+                }
+
+                .team-card.animate {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+
+                .team-card h4 {
+                    font-size: 1.8rem;
+                    margin-bottom: 1.5rem;
+                    color: #333;
+                    text-align: center;
+                }
+
+                /* Contact Section */
+                .contact-section {
+                    padding: 120px 0;
+                    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+                    color: #333;
+                }
+
+                .contact-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 3rem;
+                    margin-top: 3rem;
+                }
+
+                .contact-card {
+                    background: rgba(255, 255, 255, 0.9);
+                    padding: 3rem;
+                    border-radius: 25px;
+                    text-align: center;
+                    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                    opacity: 0;
+                    transform: translateY(50px);
+                    transition: all 0.6s ease;
+                }
+
+                .contact-card.animate {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+
+                .contact-icon {
+                    font-size: 3rem;
+                    margin-bottom: 1.5rem;
+                    color: #ff6b6b;
+                }
+
+                /* Footer */
+                .footer {
+                    background: #2c3e50;
+                    color: white;
+                    padding: 60px 0 30px;
+                }
+
+                .footer-content {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 3rem;
+                    margin-bottom: 3rem;
+                }
+
+                .footer-section h3 {
+                    margin-bottom: 1.5rem;
+                    color: #3498db;
+                    font-size: 1.3rem;
+                }
+
+                .footer-section p,
+                .footer-section li {
+                    margin-bottom: 0.8rem;
+                    opacity: 0.8;
+                }
+
+                .footer-section ul {
+                    list-style: none;
+                }
+
+                .footer-section a {
+                    color: white;
+                    text-decoration: none;
+                    transition: color 0.3s ease;
+                }
+
+                .footer-section a:hover {
+                    color: #3498db;
+                }
+
+                .footer-bottom {
+                    border-top: 1px solid #34495e;
+                    padding-top: 2rem;
+                    text-align: center;
+                    opacity: 0.7;
+                }
+
+                /* Animations */
+                @keyframes slideInDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-50px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                @keyframes slideInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(50px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                /* Scroll indicator */
+                .scroll-indicator {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 4px;
+                    background: rgba(255, 107, 107, 0.2);
+                    z-index: 1001;
+                }
+
+                .scroll-progress {
+                    height: 100%;
+                    background: linear-gradient(90deg, #ff6b6b, #ee5a52);
+                    width: 0%;
+                    transition: width 0.1s ease;
+                }
                 
-                <div class="dashboard-card">
-                    <div class="card-icon">🏢</div>
-                    <h3>Organization Details</h3>
-                    <div class="org-details">
-                        <p><strong>Name:</strong> <span id="orgName">Loading...</span></p>
-                        <p><strong>Type:</strong> <span id="orgType">Loading...</span></p>
-                        <p><strong>Email:</strong> <span id="orgEmail">Loading...</span></p>
-                        <p><strong>Phone:</strong> <span id="orgPhone">Loading...</span></p>
-                    </div>
-                </div>
-                
-                <div class="dashboard-card">
-                    <div class="card-icon">🎯</div>
-                    <h3>Quick Actions</h3>
-                    <div class="quick-actions">
-                        <button class="action-btn" id="actionBtn1">📝 Post Food</button>
-                        <button class="action-btn" id="actionBtn2">🔍 Find Food</button>
-                        <button class="action-btn">📈 View Reports</button>
-                        <button class="action-btn">⚙️ Settings</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                /* Modal Styles */
+                .modal-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.6);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 2000;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.3s ease, visibility 0.3s ease;
+                }
 
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <h2 class="section-title">How PlateSave Works</h2>
-            
-            <div class="workflow-container">
-                <div class="workflow-step">
-                    <div class="step-icon">
-                        <span class="step-number">1</span>
-                        📱
-                    </div>
-                    <h3>Instant Connection</h3>
-                    <p>Restaurants and NGOs connect through our real-time platform, creating immediate opportunities to save food</p>
-                </div>
+                .modal-overlay.show {
+                    opacity: 1;
+                    visibility: visible;
+                }
+
+                .modal-content {
+                    background: #fff;
+                    padding: 40px;
+                    border-radius: 15px;
+                    max-width: 500px;
+                    width: 90%;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                    position: relative;
+                    transform: translateY(-50px);
+                    transition: transform 0.3s ease;
+                }
+
+                .modal-overlay.show .modal-content {
+                    transform: translateY(0);
+                }
+
+                .close-btn {
+                    position: absolute;
+                    top: 15px;
+                    right: 25px;
+                    font-size: 2rem;
+                    color: #aaa;
+                    cursor: pointer;
+                    transition: color 0.3s ease;
+                }
+
+                .close-btn:hover {
+                    color: #ff6b6b;
+                }
+
+                .modal-header {
+                    margin-bottom: 25px;
+                    border-bottom: 2px solid #f0f0f0;
+                    padding-bottom: 10px;
+                }
+
+                .modal-header h3 {
+                    font-size: 2rem;
+                    color: #333;
+                }
+
+                .modal-body p {
+                    font-size: 1.1rem;
+                    line-height: 1.8;
+                    margin-bottom: 15px;
+                }
                 
-                <div class="workflow-step">
-                    <div class="step-icon">
-                        <span class="step-number">2</span>
-                        🔔
-                    </div>
-                    <h3>Smart Notifications</h3>
-                    <p>NGOs receive instant alerts when surplus food becomes available nearby, ensuring quick response times</p>
-                </div>
+                /* Form and Modal-Specific Styles */
+                .form-group {
+                    margin-bottom: 20px;
+                }
+
+                .form-group label {
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 8px;
+                    color: #555;
+                }
+
+                .form-group input {
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    transition: border-color 0.3s ease;
+                }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #ff6b6b;
+                    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+                }
+
+                .form-btn {
+                    width: 100%;
+                    padding: 15px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+
+                .form-btn:hover {
+                    background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+                }
                 
-                <div class="workflow-step">
-                    <div class="step-icon">
-                        <span class="step-number">3</span>
-                        🚚
-                    </div>
-                    <h3>Seamless Pickup</h3>
-                    <p>QR code verification, GPS tracking, and direct communication make food collection simple and secure</p>
-                </div>
+                /* New CSS for dynamic card content */
+                .dynamic-card {
+                    display: none;
+                    cursor: pointer;
+                    text-decoration: none;
+                    color: inherit;
+                }
+
+                .dynamic-card.active {
+                    display: block;
+                }
+
+                /* Responsive Design */
+                @media (max-width: 768px) {
+                    .nav-links {
+                        display: none;
+                    }
+
+                    .mobile-menu-btn {
+                        display: block;
+                    }
+
+                    .nav-cta {
+                        gap: 0.5rem;
+                    }
+
+                    .btn-nav {
+                        padding: 6px 15px;
+                        font-size: 0.9rem;
+                    }
+
+                    .hero h1 {
+                        font-size: 3rem;
+                    }
+
+                    .hero-subtitle {
+                        font-size: 1.3rem;
+                    }
+
+                    .section-title {
+                        font-size: 2.5rem;
+                    }
+
+                    .cta-buttons {
+                        flex-direction: column;
+                        align-items: center;
+                    }
+
+                    .about-content {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .workflow-container,
+                    .user-types,
+                    .dashboard-grid {
+                        grid-template-columns: 1fr;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="scroll-indicator">
+                <div class="scroll-progress"></div>
             </div>
 
-            <div class="user-types">
-                <div class="user-type-card">
-                    <h3>🏪 For Restaurants</h3>
-                    <ul class="process-steps">
-                        <li>📸 Post surplus food with photos and details</li>
-                        <li>⏰ Set pickup time windows and quantities</li>
-                        <li>📍 Share location and special instructions</li>
-                        <li>📊 Track your impact and donation history</li>
-                        <li>⭐ Build reputation through verified donations</li>
-                    </ul>
-                </div>
-                
-                <div class="user-type-card">
-                    <h3>🤝 For NGOs</h3>
-                    <ul class="process-steps">
-                        <li>🔍 Browse real-time surplus food listings</li>
-                        <li>📲 Receive instant notifications for nearby food</li>
-                        <li>🏃‍♂️ One-click claiming with automatic reservation</li>
-                        <li>🗺️ GPS navigation to pickup locations</li>
-                        <li>✅ QR verification and impact tracking</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="problem-section">
-        <div class="container">
-            <h2 class="section-title">The Food Crisis We're Solving</h2>
-            <div class="problem-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">🗑️</div>
-                    <div class="stat-number" data-count="68">0</div>
-                    <div class="stat-description">Million tonnes of food wasted annually in India</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">😢</div>
-                    <div class="stat-number" data-count="194">0</div>
-                    <div class="stat-description">Million people undernourished in India</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">🏪</div>
-                    <div class="stat-number" data-count="40">0</div>
-                    <div class="stat-description">% Food wastage happens at retail & consumer level</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">💸</div>
-                    <div class="stat-number" data-count="92">0</div>
-                    <div class="stat-description">Thousand crores lost annually due to food waste</div>
-                </div>
-            </div>
-            <p style="text-align: center; font-size: 1.4rem; opacity: 0.95; max-width: 800px; margin: 0 auto;">
-                While perfectly good food ends up in landfills, millions of people sleep hungry every night. 
-                PlateSave bridges this gap with technology, creating a win-win solution for restaurants and communities.
-            </p>
-        </div>
-    </section>
-
-    <section id="impact" class="impact-section">
-        <div class="container">
-            <h2 class="section-title">Real Impact, Real Change</h2>
-            <p style="text-align: center; font-size: 1.3rem; margin-bottom: 2rem;">
-                Every donation creates a ripple effect of positive change
-            </p>
-            
-            <div class="impact-grid">
-                <div class="impact-card">
-                    <div class="impact-icon">🥘</div>
-                    <h3>Meals Rescued</h3>
-                    <p>Transform surplus food into nutritious meals for families in need</p>
-                </div>
-                <div class="impact-card">
-                    <div class="impact-icon">🌱</div>
-                    <h3>CO₂ Reduced</h3>
-                    <p>Every meal saved prevents methane emissions from landfills</p>
-                </div>
-                <div class="impact-card">
-                    <div class="impact-icon">👥</div>
-                    <h3>Communities Fed</h3>
-                    <p>Direct impact on underprivileged communities across India</p>
-                </div>
-                <div class="impact-card">
-                    <div class="impact-icon">📊</div>
-                    <h3>Live Tracking</h3>
-                    <p>Real-time dashboards show your social and environmental impact</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="about" class="about-section">
-        <div class="container">
-            <h2 class="section-title">About PlateSave</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <h3>Our Mission</h3>
-                    <p>PlateSave was born from a simple yet powerful realization: while millions of people in India go to bed hungry every night, tons of perfectly good food end up in landfills daily. This paradox inspired Team Hack Horizon to create a technology solution that could bridge this gap.</p>
-                    
-                    <p>During our research, we discovered that 68 million tonnes of food are wasted annually in India, while 194 million people remain undernourished. The problem wasn't the lack of food, but the lack of an efficient system to connect surplus food with those who need it most.</p>
-                    
-                    <p>Built for the SIH Internal Hackathon 2025 under the theme "Agriculture and Food Technology / Clean and Green," PlateSave represents our commitment to using technology for social good. We believe that every meal saved is a step towards ending hunger and building a more sustainable future.</p>
-                    
-                    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 107, 107, 0.1); border-radius: 15px; border-left: 4px solid #ff6b6b;">
-                        <p style="font-style: italic; margin: 0; font-size: 1.1rem; color: #333;">
-                            "Technology should serve humanity. PlateSave is our contribution to a world where no one sleeps hungry while food goes to waste."
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="team-card">
-                    <h4>👥 Team Hack Horizon</h4>
-                    <div style="text-align: left; margin-top: 1.5rem;">
-                        <p><strong>🎯 Team Leader:</strong><br>Tejas Karakoti - Database Management</p>
-                        
-                        <p style="margin-top: 1rem;"><strong>👨‍💻 Development Team:</strong></p>
-                        <ul style="list-style: none; padding-left: 1rem;">
-                            <li>• Sapna Mehra - Backend Development</li>
-                            <li>• Himanshi Karakoti - Backend Development</li>
-                            <li>• Divyanshi Pal - UI/UX Design</li>
-                            <li>• Divya Bisht - UI/UX Design</li>
-                            <li>• Prateek Banoula - API Integration</li>
-                        </ul>
-                        
-                        <div style="margin-top: 2rem; text-align: center; padding: 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
-                            <p style="margin: 0; font-weight: 600; color: #667eea;">SIH Internal Hackathon 2025</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <h2 class="section-title">Get In Touch</h2>
-            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 3rem;">
-                Ready to make a difference? Join our mission to end food waste and hunger.
-            </p>
-            
-            <div class="contact-grid">
-                <div class="contact-card">
-                    <div class="contact-icon">📧</div>
-                    <h3>Email Us</h3>
-                    <p>platesavehackhorizon@com</p>
-                    <p>For partnerships and support</p>
-                </div>
-                
-                <div class="contact-card">
-                    <div class="contact-icon">📱</div>
-                    <h3>Call Us</h3>
-                    <p>+91 XXXXXXX90</p>
-                    <p>Available 24/7 for urgent queries</p>
-                </div>
-                
-                <div class="contact-card">
-                    <div class="contact-icon">🏢</div>
-                    <h3>Visit Us</h3>
-                    <p>Graphic Era Hill University</p>
-                    <p>Bhimtal, Uttarakhand, India</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>🍽️ PlateSave</h3>
-                    <p>Connecting surplus food with those who need it most. Every meal saved is a step towards ending hunger.</p>
-                    <p>Built with ❤️ by Team Hack Horizon</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
+            <nav class="navbar">
+                <div class="nav-container">
+                    <a href="#home" class="logo">🍽️ PlateSave</a>
+                    <ul class="nav-links">
                         <li><a href="#home">Home</a></li>
                         <li><a href="#how-it-works">How It Works</a></li>
                         <li><a href="#impact">Impact</a></li>
                         <li><a href="#about">About</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
+                    <div class="nav-cta">
+                        <span class="user-welcome" id="userWelcome">Welcome!</span>
+                        <a href="location.html" class="btn-nav btn-outline" id="logoutBtn">📍Nearby Location</a>
+                        <a href="#" class="btn-nav btn-outline" id="logoutBtn">Logout</a>
+
+
+                    </div>
+                    <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+                </div>
+                <div class="mobile-nav" id="mobile-nav">
+                    <a href="#home">Home</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#impact">Impact</a>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#" id="mobile-logout">Logout</a>
+                </div>
+            </nav>
+
+            <div id="notification" class="notification">
+                <span id="notification-text">Welcome to PlateSave!</span>
+            </div>
+
+            <section id="home" class="hero">
+                <div class="hero-background">
+                    <div class="hero-slide active"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
+                    <div class="hero-slide"></div>
                 </div>
                 
-                <div class="footer-section">
-                    <h3>For Organizations</h3>
-                    <ul>
-                        <li><a href="#">Restaurant Registration</a></li>
-                        <li><a href="#">NGO Registration</a></li>
-                        <li><a href="#">API Documentation</a></li>
-                        <li><a href="#">Support Center</a></li>
-                    </ul>
+                <div class="slide-indicators">
+                    <div class="slide-indicator active" data-slide="0"></div>
+                    <div class="slide-indicator" data-slide="1"></div>
+                    <div class="slide-indicator" data-slide="2"></div>
+                    <div class="slide-indicator" data-slide="3"></div>
+                    <div class="slide-indicator" data-slide="4"></div>
                 </div>
                 
-                <div class="footer-section">
-                    <h3>Legal</h3>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Food Safety Guidelines</a></li>
-                        <li><a href="#">Community Standards</a></li>
-                    </ul>
+                <div class="hero-content">
+                    <h1>🍽️ PlateSave</h1>
+                    <p class="hero-subtitle">(From Surplus to Service)</p>
+                    <p class="hero-description">
+                        Welcome to your PlateSave dashboard! Start making a difference by connecting surplus food 
+                        with those who need it most. Your organization is now part of our mission to end food waste.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn btn-primary" id="primaryAction">🍝 Manage Food</a>
+                        <a href="#" class="btn btn-secondary" id="viewProfileBtn">👤 View Profile</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="user-dashboard" class="user-dashboard">
+                <div class="container">
+                    <h2 class="section-title">Your Dashboard</h2>
+                    <div class="dashboard-grid">
+                        <a href="#" class="dashboard-card dynamic-card" id="dynamicDashboardCard">
+                            <div class="card-icon" id="dynamicCardIcon"></div>
+                            <h3 id="dynamicCardTitle"></h3>
+                            <div class="impact-stats">
+                                <div class="stat">
+                                    <span class="stat-number" id="mealsServed">0</span>
+                                    <span class="stat-label">Meals Served</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-number" id="wasteReduced">0</span>
+                                    <span class="stat-label">Kg Waste Reduced</span>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <div class="dashboard-card">
+                            <div class="card-icon">🏢</div>
+                            <h3>Organization Details</h3>
+                            <div class="org-details">
+                                <p><strong>Name:</strong> <span id="orgName">Loading...</span></p>
+                                <p><strong>Type:</strong> <span id="orgType">Loading...</span></p>
+                                <p><strong>Email:</strong> <span id="orgEmail">Loading...</span></p>
+                                <p><strong>Phone:</strong> <span id="orgPhone">Loading...</span></p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </section>
+
+            <section id="how-it-works" class="how-it-works">
+                <div class="container">
+                    <h2 class="section-title">How PlateSave Works</h2>
+                    
+                    <div class="workflow-container">
+                        <div class="workflow-step">
+                            <div class="step-icon">
+                                <span class="step-number">1</span>
+                                📱
+                            </div>
+                            <h3>Instant Connection</h3>
+                            <p>Restaurants and NGOs connect through our real-time platform, creating immediate opportunities to save food</p>
+                        </div>
+                        
+                        <div class="workflow-step">
+                            <div class="step-icon">
+                                <span class="step-number">2</span>
+                                🔔
+                            </div>
+                            <h3>Smart Notifications</h3>
+                            <p>NGOs receive instant alerts when surplus food becomes available nearby, ensuring quick response times</p>
+                        </div>
+                        
+                        <div class="workflow-step">
+                            <div class="step-icon">
+                                <span class="step-number">3</span>
+                                🚚
+                            </div>
+                            <h3>Seamless Pickup</h3>
+                            <p>QR code verification, GPS tracking, and direct communication make food collection simple and secure</p>
+                        </div>
+                    </div>
+
+                    <div class="user-types">
+                        <div class="user-type-card">
+                            <h3>🏪 For Restaurants</h3>
+                            <ul class="process-steps">
+                                <li>📸 Post surplus food with photos and details</li>
+                                <li>⏰ Set pickup time windows and quantities</li>
+                                <li>📍 Share location and special instructions</li>
+                                <li>📊 Track your impact and donation history</li>
+                                <li>⭐ Build reputation through verified donations</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="user-type-card">
+                            <h3>🤝 For NGOs</h3>
+                            <ul class="process-steps">
+                                <li>🔍 Browse real-time surplus food listings</li>
+                                <li>📲 Receive instant notifications for nearby food</li>
+                                <li>🏃‍♂️ One-click claiming with automatic reservation</li>
+                                <li>🗺️ GPS navigation to pickup locations</li>
+                                <li>✅ QR verification and impact tracking</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="problem-section">
+                <div class="container">
+                    <h2 class="section-title">The Food Crisis We're Solving</h2>
+                    <div class="problem-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">🗑️</div>
+                            <div class="stat-number" data-count="68">0</div>
+                            <div class="stat-description">Million tonnes of food wasted annually in India</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">😢</div>
+                            <div class="stat-number" data-count="194">0</div>
+                            <div class="stat-description">Million people undernourished in India</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🏪</div>
+                            <div class="stat-number" data-count="40">0</div>
+                            <div class="stat-description">% Food wastage happens at retail & consumer level</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">💸</div>
+                            <div class="stat-number" data-count="92">0</div>
+                            <div class="stat-description">Thousand crores lost annually due to food waste</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 1.4rem; opacity: 0.95; max-width: 800px; margin: 0 auto;">
+                        While perfectly good food ends up in landfills, millions of people sleep hungry every night. 
+                        PlateSave bridges this gap with technology, creating a win-win solution for restaurants and communities.
+                    </p>
+                </div>
+            </section>
+
+            <section id="impact" class="impact-section">
+                <div class="container">
+                    <h2 class="section-title">Real Impact, Real Change</h2>
+                    <p style="text-align: center; font-size: 1.3rem; margin-bottom: 2rem;">
+                        Every donation creates a ripple effect of positive change
+                    </p>
+                    
+                    <div class="impact-grid">
+                        <div class="impact-card">
+                            <div class="impact-icon">🥘</div>
+                            <h3>Meals Rescued</h3>
+                            <p>Transform surplus food into nutritious meals for families in need</p>
+                        </div>
+                        <div class="impact-card">
+                            <div class="impact-icon">🌱</div>
+                            <h3>CO₂ Reduced</h3>
+                            <p>Every meal saved prevents methane emissions from landfills</p>
+                        </div>
+                        <div class="impact-card">
+                            <div class="impact-icon">👥</div>
+                            <h3>Communities Fed</h3>
+                            <p>Direct impact on underprivileged communities across India</p>
+                        </div>
+                        <div class="impact-card">
+                            <div class="impact-icon">📊</div>
+                            <h3>Live Tracking</h3>
+                            <p>Real-time dashboards show your social and environmental impact</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="about-section">
+                <div class="container">
+                    <h2 class="section-title">About PlateSave</h2>
+                    <div class="about-content">
+                        <div class="about-text">
+                            <h3>Our Mission</h3>
+                            <p>PlateSave was born from a simple yet powerful realization: while millions of people in India go to bed hungry every night, tons of perfectly good food end up in landfills daily. This paradox inspired Team Hack Horizon to create a technology solution that could bridge this gap.</p>
+                            
+                            <p>During our research, we discovered that 68 million tonnes of food are wasted annually in India, while 194 million people remain undernourished. The problem wasn't the lack of food, but the lack of an efficient system to connect surplus food with those who need it most.</p>
+                            
+                            <p>Built for the SIH Internal Hackathon 2025 under the theme "Agriculture and Food Technology / Clean and Green," PlateSave represents our commitment to using technology for social good. We believe that every meal saved is a step towards ending hunger and building a more sustainable future.</p>
+                            
+                            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 107, 107, 0.1); border-radius: 15px; border-left: 4px solid #ff6b6b;">
+                                <p style="font-style: italic; margin: 0; font-size: 1.1rem; color: #333;">
+                                    "Technology should serve humanity. PlateSave is our contribution to a world where no one sleeps hungry while food goes to waste."
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="team-card">
+                            <h4>👥 Team Hack Horizon</h4>
+                            <div style="text-align: left; margin-top: 1.5rem;">
+                                <p><strong>🎯 Team Leader:</strong><br>Tejas Karakoti - Database Management</p>
+                                
+                                <p style="margin-top: 1rem;"><strong>👨‍💻 Development Team:</strong></p>
+                                <ul style="list-style: none; padding-left: 1rem;">
+                                    <li>• Sapna Mehra - Backend Development</li>
+                                    <li>• Himanshi Karakoti - Backend Development</li>
+                                    <li>• Divyanshi Pal - UI/UX Design</li>
+                                    <li>• Divya Bisht - UI/UX Design</li>
+                                    <li>• Prateek Banoula - API Integration</li>
+                                </ul>
+                                
+                                <div style="margin-top: 2rem; text-align: center; padding: 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 10px;">
+                                    <p style="margin: 0; font-weight: 600; color: #667eea;">SIH Internal Hackathon 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="contact-section">
+                <div class="container">
+                    <h2 class="section-title">Get In Touch</h2>
+                    <p style="text-align: center; font-size: 1.2rem; margin-bottom: 3rem;">
+                        Ready to make a difference? Join our mission to end food waste and hunger.
+                    </p>
+                    
+                    <div class="contact-grid">
+                        <div class="contact-card">
+                            <div class="contact-icon">📧</div>
+                            <h3>Email Us</h3>
+                            <p>platesavehackhorizon@com</p>
+                            <p>For partnerships and support</p>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon">📱</div>
+                            <h3>Call Us</h3>
+                            <p>+91 XXXXXXX90</p>
+                            <p>Available 24/7 for urgent queries</p>
+                        </div>
+                        
+                        <div class="contact-card">
+                            <div class="contact-icon">🏢</div>
+                            <h3>Visit Us</h3>
+                            <p>Graphic Era Hill University</p>
+                            <p>Bhimtal, Uttarakhand, India</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="container">
+                    <div class="footer-content">
+                        <div class="footer-section">
+                            <h3>🍽️ PlateSave</h3>
+                            <p>Connecting surplus food with those who need it most. Every meal saved is a step towards ending hunger.</p>
+                            <p>Built with ❤️ by Team Hack Horizon</p>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>Quick Links</h3>
+                            <ul>
+                                <li><a href="#home">Home</a></li>
+                                <li><a href="#how-it-works">How It Works</a></li>
+                                <li><a href="#impact">Impact</a></li>
+                                <li><a href="#about">About</a></li>
+                                <li><a href="#contact">Contact</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>For Organizations</h3>
+                            <ul>
+                                <li><a href="#">Restaurant Registration</a></li>
+                                <li><a href="#">NGO Registration</a></li>
+                                <li><a href="#">API Documentation</a></li>
+                                <li><a href="#">Support Center</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-section">
+                            <h3>Legal</h3>
+                            <ul>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Terms of Service</a></li>
+                                <li><a href="#">Food Safety Guidelines</a></li>
+                                <li><a href="#">Community Standards</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-bottom">
+                        <p>&copy; 2025 PlateSave by Team Hack Horizon. All rights reserved. | SIH Internal Hackathon 2025</p>
+                    </div>
+                </div>
+            </footer>
+            
+            <div id="profileModal" class="modal-overlay">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <div class="modal-header">
+                        <h3>👤 Your Profile</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Organization Name:</strong> <span id="modalOrgName"></span></p>
+                        <p><strong>Account Type:</strong> <span id="modalOrgType"></span></p>
+                        <p><strong>Email:</strong> <span id="modalOrgEmail"></span></p>
+                        <p><strong>Phone:</strong> <span id="modalOrgPhone"></span></p>
+                    </div>
                 </div>
             </div>
             
-            <div class="footer-bottom">
-                <p>&copy; 2025 PlateSave by Team Hack Horizon. All rights reserved. | SIH Internal Hackathon 2025</p>
+            <div id="postFoodModal" class="modal-overlay">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <div class="modal-header">
+                        <h3>🍝 Post Surplus Food</h3>
+                    </div>
+                    <div class="modal-body">
+                        <form id="postFoodForm">
+                            <div class="form-group">
+                                <label for="foodItem">Food Item</label>
+                                <input type="text" id="foodItem" name="foodItem" placeholder="e.g., Cooked Rice, Bread, Mixed Vegetables" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="foodQuantity">Quantity (in kg)</label>
+                                <input type="number" id="foodQuantity" name="foodQuantity" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="foodExpiry">Best Before Date</label>
+                                <input type="date" id="foodExpiry" name="foodExpiry" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="userLocation">Your Location</label>
+                                <input type="text" id="userLocation" name="userLocation" placeholder="Enter your address or a landmark" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary form-btn">Post Donation</button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-    </footer>
 
-    <script>
-        // Dashboard Data Management
-        class DashboardManager {
-            constructor() {
-                this.currentUser = null;
-                this.notifications = [];
-                this.slideInterval = null;
-                this.currentSlide = 0;
-                
-                this.init();
-            }
-            
-            init() {
-                this.loadUserData();
-                this.setupEventListeners();
-                this.initializeHeroSlider();
-                this.initializeScrollAnimations();
-                this.initializeCounters();
-                this.updateScrollProgress();
-            }
-            
-            loadUserData() {
-                const storedUserData = localStorage.getItem('currentUser');
-                if (storedUserData) {
-                    const userData = JSON.parse(storedUserData);
-                    
-                    this.currentUser = userData.accountType;
-
-                    const userWelcomeElement = document.getElementById('userWelcome');
-                    if (userWelcomeElement) {
-                        userWelcomeElement.textContent = `Welcome, ${userData.organizationName}!`;
+            <script>
+                // Dashboard Data Management
+                class DashboardManager {
+                    constructor() {
+                        this.currentUser = null;
+                        this.notifications = [];
+                        this.slideInterval = null;
+                        this.currentSlide = 0;
+                        
+                        this.init();
                     }
                     
-                    document.getElementById('orgName').textContent = userData.organizationName;
-                    document.getElementById('orgType').textContent = (userData.accountType === 'restaurant') ? 'Restaurant Partner' : 'NGO Partner';
-                    document.getElementById('orgEmail').textContent = userData.email;
-                    document.getElementById('orgPhone').textContent = userData.phone;
-
-                    const primaryBtn = document.getElementById('primaryAction');
-                    const actionBtn1 = document.getElementById('actionBtn1');
-                    const actionBtn2 = document.getElementById('actionBtn2');
-
-                    if (this.currentUser === 'restaurant') {
-                        primaryBtn.textContent = '🍝 Post Surplus Food';
-                        if (actionBtn1) actionBtn1.textContent = '📝 Post Food';
-                        if (actionBtn2) actionBtn2.textContent = '📋 Manage Listings';
-                    } else {
-                        primaryBtn.textContent = '🔍 Find Available Food';
-                        if (actionBtn1) actionBtn1.textContent = '🔍 Browse Food';
-                        if (actionBtn2) actionBtn2.textContent = '📋 My Claims';
+                    init() {
+                        this.loadUserData();
+                        this.setupEventListeners();
+                        this.initializeHeroSlider();
+                        this.initializeScrollAnimations();
+                        this.initializeCounters();
+                        this.updateScrollProgress();
                     }
                     
-                    this.animateCounter('mealsServed', (this.currentUser === 'restaurant' ? 1247 : 856));
-                    this.animateCounter('wasteReduced', (this.currentUser === 'restaurant' ? 523 : 342));
+                    loadUserData() {
+                        const storedUserData = localStorage.getItem('currentUser');
+                        if (storedUserData) {
+                            const userData = JSON.parse(storedUserData);
+                            
+                            this.currentUser = userData.accountType;
 
-                    this.showWelcomeNotification(userData.organizationName);
+                            const userWelcomeElement = document.getElementById('userWelcome');
+                            if (userWelcomeElement) {
+                                userWelcomeElement.textContent = `Welcome, ${userData.organizationName}!`;
+                            }
+                            
+                            document.getElementById('orgName').textContent = userData.organizationName;
+                            document.getElementById('orgType').textContent = (userData.accountType === 'restaurant') ? 'Restaurant Partner' : 'NGO Partner';
+                            document.getElementById('orgEmail').textContent = userData.email;
+                            document.getElementById('orgPhone').textContent = userData.phone;
 
-                } else {
-                    window.location.href = 'register.html';
-                }
-            }
-            
-            animateCounter(elementId, targetValue) {
-                const element = document.getElementById(elementId);
-                if (!element) return;
-                
-                let currentValue = 0;
-                const increment = targetValue / 60;
-                
-                const timer = setInterval(() => {
-                    currentValue += increment;
-                    if (currentValue >= targetValue) {
-                        currentValue = targetValue;
-                        clearInterval(timer);
-                    }
-                    element.textContent = Math.floor(currentValue);
-                }, 50);
-            }
-            
-            showNotification(message, type = 'info') {
-                const notification = document.getElementById('notification');
-                const notificationText = document.getElementById('notification-text');
-                
-                notificationText.textContent = message;
-                notification.className = `notification show ${type}`;
-                
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                }, 3000);
-            }
-            
-            showWelcomeNotification(userName) {
-                setTimeout(() => {
-                    this.showNotification(`Welcome, ${userName}! Ready to make a difference today?`);
-                }, 1000);
-            }
-            
-            initializeHeroSlider() {
-                const slides = document.querySelectorAll('.hero-slide');
-                const indicators = document.querySelectorAll('.slide-indicator');
+                            const primaryBtn = document.getElementById('primaryAction');
+                            const dynamicCard = document.getElementById('dynamicDashboardCard');
+                            const dynamicCardIcon = document.getElementById('dynamicCardIcon');
+                            const dynamicCardTitle = document.getElementById('dynamicCardTitle');
+                            
+                            if (this.currentUser === 'restaurant') {
+                                primaryBtn.textContent = '🍝 Post Surplus Food';
+                                dynamicCardTitle.textContent = 'Your Impact';
+                                dynamicCardIcon.textContent = '📊';
+                                dynamicCard.setAttribute('href', '#'); // Not a location link
+                                this.animateCounter('mealsServed', 1247);
+                                this.animateCounter('wasteReduced', 523);
+                            } else {
+                                primaryBtn.textContent = '🔍 Find Available Food';
+                                dynamicCardTitle.textContent = 'Location Nearby';
+                                dynamicCardIcon.textContent = '📍';
+                                dynamicCard.setAttribute('href', 'location.html'); // Set the redirect link
+                                this.animateCounter('mealsServed', 856);
+                                this.animateCounter('wasteReduced', 342);
+                            }
 
-                this.slideInterval = setInterval(() => this.nextSlide(), 4000);
+                            // Show the dynamic card
+                            dynamicCard.style.display = 'block';
 
-                indicators.forEach((indicator, index) => {
-                    indicator.addEventListener('click', () => {
-                        this.goToSlide(index);
-                    });
-                });
-                
-                const heroSection = document.querySelector('.hero');
-                heroSection.addEventListener('mouseenter', () => {
-                    clearInterval(this.slideInterval);
-                });
+                            this.showWelcomeNotification(userData.organizationName);
 
-                heroSection.addEventListener('mouseleave', () => {
-                    this.slideInterval = setInterval(() => this.nextSlide(), 4000);
-                });
-            }
-
-            nextSlide() {
-                const slides = document.querySelectorAll('.hero-slide');
-                const indicators = document.querySelectorAll('.slide-indicator');
-
-                if (slides[this.currentSlide]) slides[this.currentSlide].classList.remove('active');
-                if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.remove('active');
-
-                this.currentSlide = (this.currentSlide + 1) % slides.length;
-
-                if (slides[this.currentSlide]) slides[this.currentSlide].classList.add('active');
-                if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.add('active');
-            }
-
-            goToSlide(index) {
-                const slides = document.querySelectorAll('.hero-slide');
-                const indicators = document.querySelectorAll('.slide-indicator');
-
-                if (slides[this.currentSlide]) slides[this.currentSlide].classList.remove('active');
-                if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.remove('active');
-
-                this.currentSlide = index;
-
-                if (slides[this.currentSlide]) slides[this.currentSlide].classList.add('active');
-                if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.add('active');
-
-                clearInterval(this.slideInterval);
-                this.slideInterval = setInterval(() => this.nextSlide(), 4000);
-            }
-            
-            initializeScrollAnimations() {
-                const observerOptions = {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('animate');
-                        }
-                    });
-                }, observerOptions);
-
-                const animateElements = document.querySelectorAll('.dashboard-card, .workflow-step, .user-type-card, .impact-card, .contact-card, .about-text, .team-card');
-                animateElements.forEach(element => {
-                    observer.observe(element);
-                });
-            }
-            
-            initializeCounters() {
-                const counters = document.querySelectorAll('.problem-section .stat-number');
-                const counterObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            this.animateStatCounter(entry.target);
-                            counterObserver.unobserve(entry.target);
-                        }
-                    });
-                }, {
-                    threshold: 0.5
-                });
-
-                counters.forEach(counter => {
-                    counterObserver.observe(counter);
-                });
-            }
-
-            animateStatCounter(element) {
-                const target = parseInt(element.dataset.count);
-                let current = 0;
-                const increment = target / 50;
-                const timer = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        current = target;
-                        clearInterval(timer);
-                    }
-                    const formattedNumber = Math.floor(current) + (target > 100 ? 'M' : target === 40 ? '%' : 'K');
-                    element.textContent = formattedNumber;
-                }, 50);
-            }
-            
-            setupEventListeners() {
-                const navbar = document.querySelector('.navbar');
-                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-                const mobileNav = document.getElementById('mobile-nav');
-
-                if (mobileMenuBtn) {
-                    mobileMenuBtn.addEventListener('click', () => this.toggleMobileMenu());
-                }
-
-                const logoutBtn = document.getElementById('logoutBtn');
-                if (logoutBtn) {
-                    logoutBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.handleLogout();
-                    });
-                }
-
-                const mobileLogoutBtn = document.getElementById('mobile-logout');
-                if (mobileLogoutBtn) {
-                    mobileLogoutBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.closeMobileMenu();
-                        this.handleLogout();
-                    });
-                }
-
-                const actionBtn1 = document.getElementById('actionBtn1');
-                if (actionBtn1) {
-                    actionBtn1.addEventListener('click', () => {
-                        if (this.currentUser === 'restaurant') {
-                            this.showNotification('Opening food posting form...', 'success');
                         } else {
-                            this.showNotification('Browsing available food listings...', 'success');
-                        }
-                    });
-                }
-
-                const actionBtn2 = document.getElementById('actionBtn2');
-                if (actionBtn2) {
-                    actionBtn2.addEventListener('click', () => {
-                        if (this.currentUser === 'restaurant') {
-                            this.showNotification('Loading your food listings...', 'info');
-                        } else {
-                            this.showNotification('Loading your claimed items...', 'info');
-                        }
-                    });
-                }
-
-                const primaryActionBtn = document.getElementById('primaryAction');
-                if (primaryActionBtn) {
-                    primaryActionBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        if (this.currentUser === 'restaurant') {
-                            this.showNotification('Ready to post surplus food! 🍝', 'success');
-                        } else {
-                            this.showNotification('Searching for available food nearby... 🔍', 'success');
-                        }
-                    });
-                }
-
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', (e) => this.handleSmoothScroll(e));
-                });
-
-                window.addEventListener('scroll', () => {
-                    this.handleScroll();
-                });
-            }
-            
-            toggleMobileMenu() {
-                const mobileNav = document.getElementById('mobile-nav');
-                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-                
-                mobileNav.classList.toggle('active');
-                mobileMenuBtn.textContent = mobileNav.classList.contains('active') ? '✕' : '☰';
-            }
-
-            closeMobileMenu() {
-                const mobileNav = document.getElementById('mobile-nav');
-                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-                
-                mobileNav.classList.remove('active');
-                mobileMenuBtn.textContent = '☰';
-            }
-
-            handleLogout() {
-                this.showNotification('Logging out... Thank you for using PlateSave!', 'info');
-                
-                localStorage.removeItem('currentUser');
-
-                setTimeout(() => {
-                    window.location.href = 'register.html';
-                }, 1500);
-            }
-
-            handleSmoothScroll(e) {
-                e.preventDefault();
-                const targetId = e.target.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-
-                if (targetElement) {
-                    const offsetTop = targetElement.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-
-                    this.closeMobileMenu();
-                }
-            }
-
-            handleScroll() {
-                const navbar = document.querySelector('.navbar');
-                
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-
-                this.updateScrollProgress();
-            }
-
-            updateScrollProgress() {
-                const scrollProgress = document.querySelector('.scroll-progress');
-                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const progress = (scrollTop / scrollHeight) * 100;
-                if (scrollProgress) {
-                    scrollProgress.style.width = progress + '%';
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            new DashboardManager();
-        });
-
-        window.addEventListener('error', function(e) {
-            console.error('Dashboard error:', e.error);
-        });
-
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.classList.remove('lazy');
-                            imageObserver.unobserve(img);
+                            window.location.href = 'register.html';
                         }
                     }
-                });
-            });
+                    
+                    animateCounter(elementId, targetValue) {
+                        const elements = document.querySelectorAll('#' + elementId);
+                        elements.forEach(element => {
+                            let currentValue = 0;
+                            const increment = targetValue / 60;
+                            
+                            const timer = setInterval(() => {
+                                currentValue += increment;
+                                if (currentValue >= targetValue) {
+                                    currentValue = targetValue;
+                                    clearInterval(timer);
+                                }
+                                element.textContent = Math.floor(currentValue);
+                            }, 50);
+                        });
+                    }
+                    
+                    showNotification(message, type = 'info') {
+                        const notification = document.getElementById('notification');
+                        const notificationText = document.getElementById('notification-text');
+                        
+                        notificationText.textContent = message;
+                        notification.className = `notification show ${type}`;
+                        
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 3000);
+                    }
+                    
+                    showWelcomeNotification(userName) {
+                        setTimeout(() => {
+                            this.showNotification(`Welcome, ${userName}! Ready to make a difference today?`);
+                        }, 1000);
+                    }
+                    
+                    showProfileModal() {
+                        const userData = JSON.parse(localStorage.getItem('currentUser'));
+                        if (!userData) {
+                            this.showNotification('User data not found. Please log in again.', 'error');
+                            return;
+                        }
 
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
-            });
-        }
-    </script>
-</body>
-</html>
+                        document.getElementById('modalOrgName').textContent = userData.organizationName;
+                        document.getElementById('modalOrgType').textContent = (userData.accountType === 'restaurant') ? 'Restaurant Partner' : 'NGO Partner';
+                        document.getElementById('modalOrgEmail').textContent = userData.email;
+                        document.getElementById('modalOrgPhone').textContent = userData.phone;
+
+                        const modal = document.getElementById('profileModal');
+                        modal.classList.add('show');
+                    }
+                    
+                    showPostFoodModal() {
+                        const postFoodModal = document.getElementById('postFoodModal');
+                        postFoodModal.classList.add('show');
+                    }
+
+                    initializeHeroSlider() {
+                        const slides = document.querySelectorAll('.hero-slide');
+                        const indicators = document.querySelectorAll('.slide-indicator');
+
+                        this.slideInterval = setInterval(() => this.nextSlide(), 4000);
+
+                        indicators.forEach((indicator, index) => {
+                            indicator.addEventListener('click', () => {
+                                this.goToSlide(index);
+                            });
+                        });
+                        
+                        const heroSection = document.querySelector('.hero');
+                        heroSection.addEventListener('mouseenter', () => {
+                            clearInterval(this.slideInterval);
+                        });
+
+                        heroSection.addEventListener('mouseleave', () => {
+                            this.slideInterval = setInterval(() => this.nextSlide(), 4000);
+                        });
+                    }
+
+                    nextSlide() {
+                        const slides = document.querySelectorAll('.hero-slide');
+                        const indicators = document.querySelectorAll('.slide-indicator');
+
+                        if (slides[this.currentSlide]) slides[this.currentSlide].classList.remove('active');
+                        if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.remove('active');
+
+                        this.currentSlide = (this.currentSlide + 1) % slides.length;
+
+                        if (slides[this.currentSlide]) slides[this.currentSlide].classList.add('active');
+                        if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.add('active');
+                    }
+
+                    goToSlide(index) {
+                        const slides = document.querySelectorAll('.hero-slide');
+                        const indicators = document.querySelectorAll('.slide-indicator');
+
+                        if (slides[this.currentSlide]) slides[this.currentSlide].classList.remove('active');
+                        if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.remove('active');
+
+                        this.currentSlide = index;
+
+                        if (slides[this.currentSlide]) slides[this.currentSlide].classList.add('active');
+                        if (indicators[this.currentSlide]) indicators[this.currentSlide].classList.add('active');
+
+                        clearInterval(this.slideInterval);
+                        this.slideInterval = setInterval(() => this.nextSlide(), 4000);
+                    }
+                    
+                    initializeScrollAnimations() {
+                        const observerOptions = {
+                            threshold: 0.1,
+                            rootMargin: '0px 0px -50px 0px'
+                        };
+
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    entry.target.classList.add('animate');
+                                }
+                            });
+                        }, observerOptions);
+
+                        const animateElements = document.querySelectorAll('.dashboard-card, .workflow-step, .user-type-card, .impact-card, .contact-card, .about-text, .team-card');
+                        animateElements.forEach(element => {
+                            observer.observe(element);
+                            
+                        });
+                    }
+                    
+                    initializeCounters() {
+                        const counters = document.querySelectorAll('.problem-section .stat-number');
+                        const counterObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    this.animateStatCounter(entry.target);
+                                    counterObserver.unobserve(entry.target);
+                                }
+                            });
+                        }, {
+                            threshold: 0.5
+                        });
+
+                        counters.forEach(counter => {
+                            counterObserver.observe(counter);
+                        });
+                    }
+
+                    animateStatCounter(element) {
+                        const target = parseInt(element.dataset.count);
+                        let current = 0;
+                        const increment = target / 50;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                current = target;
+                                clearInterval(timer);
+                            }
+                            const formattedNumber = Math.floor(current) + (target > 100 ? 'M' : target === 40 ? '%' : 'K');
+                            element.textContent = formattedNumber;
+                        }, 50);
+                    }
+                    
+                    setupEventListeners() {
+                        const navbar = document.querySelector('.navbar');
+                        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                        const mobileNav = document.getElementById('mobile-nav');
+                        const viewProfileBtn = document.getElementById('viewProfileBtn');
+                        const profileModal = document.getElementById('profileModal');
+                        const profileCloseBtn = profileModal ? profileModal.querySelector('.close-btn') : null;
+                        const postFoodBtn = document.getElementById('primaryAction');
+                        const postFoodModal = document.getElementById('postFoodModal');
+                        const postFoodCloseBtn = postFoodModal ? postFoodModal.querySelector('.close-btn') : null;
+                        const postFoodForm = document.getElementById('postFoodForm');
+
+                        if (mobileMenuBtn) {
+                            mobileMenuBtn.addEventListener('click', () => this.toggleMobileMenu());
+                        }
+
+                        const logoutBtn = document.getElementById('logoutBtn');
+                        if (logoutBtn) {
+                            logoutBtn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                this.handleLogout();
+                            });
+                        }
+
+                        const mobileLogoutBtn = document.getElementById('mobile-logout');
+                        if (mobileLogoutBtn) {
+                            mobileLogoutBtn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                this.closeMobileMenu();
+                                this.handleLogout();
+                            });
+                        }
+
+                        if (postFoodBtn) {
+                            postFoodBtn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                if (this.currentUser === 'restaurant') {
+                                    this.showPostFoodModal();
+                                } else {
+                                    // Redirect to location.html for NGO users
+                                    window.location.href = 'location.html';
+                                }
+                            });
+                        }
+                        
+                        if (viewProfileBtn) {
+                            viewProfileBtn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                this.showProfileModal();
+                            });
+                        }
+                        
+                        const dynamicCard = document.getElementById('dynamicDashboardCard');
+                        if (dynamicCard) {
+                            dynamicCard.addEventListener('click', (e) => {
+                                // Prevents the default anchor link behavior
+                                e.preventDefault(); 
+                                const redirectUrl = dynamicCard.getAttribute('href');
+                                if (redirectUrl && redirectUrl !== '#') {
+                                    window.location.href = redirectUrl;
+                                }
+                            });
+                        }
+
+                        if (profileModal) {
+                            profileModal.addEventListener('click', (e) => {
+                                if (e.target === profileModal || e.target === profileCloseBtn) {
+                                    profileModal.classList.remove('show');
+                                }
+                            });
+                        }
+
+                        if (postFoodModal) {
+                            postFoodModal.addEventListener('click', (e) => {
+                                if (e.target === postFoodModal || e.target === postFoodCloseBtn) {
+                                    postFoodModal.classList.remove('show');
+                                }
+                            });
+                        }
+
+                        if (postFoodForm) {
+                            postFoodForm.addEventListener('submit', (e) => {
+                                e.preventDefault();
+                                const formData = new FormData(postFoodForm);
+                                const data = Object.fromEntries(formData.entries());
+                                console.log('Food Donation Posted:', data);
+                                
+                                this.showNotification('Food donation posted successfully! 🎉', 'success');
+                                
+                                postFoodModal.classList.remove('show');
+                                postFoodForm.reset();
+                            });
+                        }
+
+                        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                            anchor.addEventListener('click', (e) => this.handleSmoothScroll(e));
+                        });
+
+                        window.addEventListener('scroll', () => {
+                            this.handleScroll();
+                        });
+                    }
+                    
+                    toggleMobileMenu() {
+                        const mobileNav = document.getElementById('mobile-nav');
+                        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                        
+                        mobileNav.classList.toggle('active');
+                        mobileMenuBtn.textContent = mobileNav.classList.contains('active') ? '✕' : '☰';
+                    }
+
+                    closeMobileMenu() {
+                        const mobileNav = document.getElementById('mobile-nav');
+                        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                        
+                        mobileNav.classList.remove('active');
+                        mobileMenuBtn.textContent = '☰';
+                    }
+
+                    handleLogout() {
+                        this.showNotification('Logging out... Thank you for using PlateSave!', 'info');
+                        
+                        localStorage.removeItem('currentUser');
+
+                        setTimeout(() => {
+                            window.location.href = 'register.html';
+                        }, 1500);
+                    }
+
+                    handleSmoothScroll(e) {
+                        e.preventDefault();
+                        const targetId = e.target.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+
+                        if (targetElement) {
+                            const offsetTop = targetElement.offsetTop - 80;
+                            window.scrollTo({
+                                top: offsetTop,
+                                behavior: 'smooth'
+                            });
+
+                            this.closeMobileMenu();
+                        }
+                    }
+
+                    handleScroll() {
+                        const navbar = document.querySelector('.navbar');
+                        
+                        if (window.scrollY > 50) {
+                            navbar.classList.add('scrolled');
+                        } else {
+                            navbar.classList.remove('scrolled');
+                        }
+
+                        this.updateScrollProgress();
+                    }
+
+                    updateScrollProgress() {
+                        const scrollProgress = document.querySelector('.scroll-progress');
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                        const progress = (scrollTop / scrollHeight) * 100;
+                        if (scrollProgress) {
+                            scrollProgress.style.width = progress + '%';
+                        }
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    new DashboardManager();
+                });
+
+                window.addEventListener('error', function(e) {
+                    console.error('Dashboard error:', e.error);
+                });
+
+                if ('IntersectionObserver' in window) {
+                    const imageObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                if (img.dataset.src) {
+                                    img.src = img.dataset.src;
+                                    img.classList.remove('lazy');
+                                    imageObserver.unobserve(img);
+                                }
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('img[data-src]').forEach(img => {
+                        imageObserver.observe(img);
+                    });
+                }
+            </script>
+        </body>
+        </html>
