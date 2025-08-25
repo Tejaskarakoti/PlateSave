@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlateSave</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #f0fdf4, #eff6ff);
+      margin: 0;
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    header b {
+      font-size: 1.5rem;
+    }
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: #16a34a;
+      color: white;
+      font-size: 1rem;
+    }
+    .btn:hover {
+      background: #15803d;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: 0.5rem auto;
+      text-align: center;
+      max-width: 400px;
+    }
+    .badge {
+      background: #f3f4f6;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+    section {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* Return button style */
+    #returnBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    #returnBtn:hover {
+      background: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <span style="font-size:1.5rem;">🍽</span> <b>PlateSave</b>
+  </header>
+
+  <!-- Hero Section -->
+  <section>
+    <h1 style="font-size:2.5rem;">🍽 PlateSave</h1>
+    <p>Turning Food Waste Into Hope</p>
+    <p>Every meal saved is a step towards ending hunger. Connect surplus food from restaurants with NGOs who feed communities in need.</p>
+    
+    <!-- Centered Card -->
+    <div class="card">
+      <h3>📍 Find Nearby Partners</h3>
+      <button id="getLocationBtn" class="btn">Get My Location</button>
+      <p id="locationMsg" style="color: red; font-size: 0.9rem;"></p>
+      <p id="locationDetails" style="font-weight: bold; color: #065f46;"></p>
+    </div>
+  </section>
+
+  <!-- Nearby Restaurants & NGOs -->
+  <section id="results" style="display:none;">
+    <h2>Nearby Restaurants</h2>
+    <div id="restaurants"></div>
+    <h2>Nearby NGOs</h2>
+    <div id="ngos"></div>
+  </section>
+
+  <!-- Return Button -->
+  <button id="returnBtn">⬅ Return Home</button>
+
+  <script>
+    let userLocation = null;
+
+    document.getElementById("getLocationBtn").addEventListener("click", () => {
+      if (!navigator.geolocation) {
+        document.getElementById("locationMsg").textContent = "Geolocation not supported.";
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          userLocation = {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude
+          };
+          document.getElementById("locationMsg").textContent = "";
+          document.getElementById("locationDetails").textContent =
+            `✅ Location Found: Lat ${userLocation.latitude.toFixed(4)}, Lng ${userLocation.longitude.toFixed(4)}`;
+          findNearbyLocations(userLocation);
+        },
+        err => {
+          document.getElementById("locationMsg").textContent = "Location access denied.";
+        }
+      );
+    });
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = ((lat2 - lat1) * Math.PI) / 180;
+      const dLon = ((lon2 - lon1) * Math.PI) / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    function findNearbyLocations(loc) {
+      document.getElementById("results").style.display = "block";
+
+      const restaurants = [
+        { name: "Green Garden", lat: loc.latitude + 0.01, lon: loc.longitude + 0.01, food: "Vegetarian", qty: "50 meals" },
+        { name: "Spice Palace", lat: loc.latitude - 0.005, lon: loc.longitude + 0.008, food: "Indian Cuisine", qty: "30 meals" }
+      ];
+      const ngos = [
+        { name: "Hope Foundation", lat: loc.latitude + 0.012, lon: loc.longitude - 0.005, focus: "Children", cap: "100 people" }
+      ];
+
+      const restDiv = document.getElementById("restaurants");
+      restDiv.innerHTML = "";
+      restaurants.forEach(r => {
+        const dist = calculateDistance(loc.latitude, loc.longitude, r.lat, r.lon).toFixed(1);
+        restDiv.innerHTML += `<div class="card"><b>${r.name}</b> <span class="badge">${dist} km</span><br/>🍲 ${r.food}, Available: ${r.qty}</div>`;
+      });
+
+      const ngoDiv = document.getElementById("ngos");
+      ngoDiv.innerHTML = "";
+      ngos.forEach(n => {
+        const dist = calculateDistance(loc.latitude, loc.longitude, n.lat, n.lon).toFixed(1);
+        ngoDiv.innerHTML += `<div class="card"><b>${n.name}</b> <span class="badge">${dist} km</span><br/>🤝 Focus: ${n.focus}, Capacity: ${n.cap}</div>`;
+      });
+    }
+
+    // Return button functionality
+    document.getElementById("returnBtn").addEventListener("click", () => {
+      if (confirm("Do you want to return to the Home Page?")) {
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>
